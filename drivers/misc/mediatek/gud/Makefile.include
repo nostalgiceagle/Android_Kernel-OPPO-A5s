@@ -1,0 +1,9 @@
+ifeq ($(CONFIG_TRUSTONIC_TEE_SUPPORT),y)
+    ifeq ($(CONFIG_TRUSTONIC_TEE_VERSION), "302d")
+        ccflags-y += -I$(srctree)/drivers/misc/mediatek/gud/$(CONFIG_TRUSTONIC_TEE_VERSION)/MobiCoreKernelApi/include \
+                     -I$(srctree)/drivers/misc/mediatek/gud/$(CONFIG_TRUSTONIC_TEE_VERSION)/MobiCoreKernelApi/public
+    else
+        ccflags-y += -I$(srctree)/drivers/misc/mediatek/gud/$(CONFIG_TRUSTONIC_TEE_VERSION)/MobiCoreDriver/public
+        ccflags-y += -I$(srctree)/drivers/misc/mediatek/gud/$(CONFIG_TRUSTONIC_TEE_VERSION)/MobiCoreDriver/public/GP
+    endif
+endif
