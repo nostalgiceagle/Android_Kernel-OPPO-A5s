@@ -1,0 +1,66 @@
+name: Prit Kernel Builder
+
+on:
+  push:
+    branches:
+      - main 
+  workflow_dispatch:  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Kernel Source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Required Packages
+        run: |
+          sudo apt update
+          sudo apt install -y git flex bison gperf build-essential zip curl libc6-dev libncurses-dev \
+              libx11-dev libreadline-dev libgl1 libgl1-mesa-dev python3 make bc grep tofrodos \
+              python3-markdown libxml2-utils xsltproc zlib1g-dev libc6-dev libtinfo6 make repo \
+              cpio kmod openssl libelf-dev pahole libssl-dev
+
+      - name: Setup Build Environment
+        run: |
+          export ARCH=arm64
+          export PATH=$GITHUB_WORKSPACE/toolchains/aarch64-linux-android-4.9/bin:$PATH
+          echo "ARCH=$ARCH" >> $GITHUB_ENV
+          echo "PATH=$PATH" >> $GITHUB_ENV
+
+      - name: Configure Kernel
+        run: |
+          make O=out ARCH=arm64 oppo6765_18511_defconfig
+
+      - name: Compile Kernel
+        run: |
+          make O=out ARCH=arm64 -j$(nproc)
+        continue-on-error: false 
+
+      - name: Check Build Output
+        id: check_kernel
+        run: |
+          if [[ -f "out/arch/arm64/boot/Image.gz" ]]; then
+            echo "KERNEL_IMAGE=out/arch/arm64/boot/Image.gz" >> $GITHUB_ENV
+          elif [[ -f "out/arch/arm64/boot/Image" ]]; then
+            echo "KERNEL_IMAGE=out/arch/arm64/boot/Image" >> $GITHUB_ENV
+          else
+            echo "Kernel build failed! No Image or Image.gz found."
+            exit 1
+          fi
+
+      - name: Upload Kernel Image as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-kernel
+          path: ${{ env.KERNEL_IMAGE }}
+
+      - name: Send Kernel to Telegram
+        if: env.TG_CHAT != '' && env.TG_BOT_HTTP != ''
+        run: |
+          curl -F "chat_id=${{ secrets.TG_CHAT }}" -F "document=@${{ env.KERNEL_IMAGE }}" \
+            "${{ secrets.TG_BOT_HTTP }}/sendDocument"
+        continue-on-error: true 
