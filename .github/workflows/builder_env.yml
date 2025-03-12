@@ -39,7 +39,13 @@ jobs:
       - name: Configure Kernel
         run: |
           make O=out ARCH=arm64 oppo6765_18511_defconfig
-
+  
+      - name: Setup the Toolchain
+        run: |
+           rm -rf toolchain
+           git clone https://github.com/flex36ty/toolchains_aarch64-linux-android-4.9
+           mv toolchains* toolchain
+           
       - name: Compile Kernel
         run: |
           make O=out ARCH=arm64 -j$(nproc)
