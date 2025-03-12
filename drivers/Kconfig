@@ -204,6 +204,6 @@ source "drivers/fpga/Kconfig"
 
 source "drivers/trusty/Kconfig"
 
-source "drivers/kernelsu/kernel/Kconfig"
+# source "drivers/kernelsu/kernel/Kconfig"
 
 endmenu
