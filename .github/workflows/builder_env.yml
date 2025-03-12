@@ -26,6 +26,10 @@ jobs:
 
       - name: Setup Build Environment
         run: |
+          git submodule update --init
+          
+      - name: Setup Build Environment
+        run: |
           export ARCH=arm64
           export PATH=$GITHUB_WORKSPACE/toolchains/aarch64-linux-android-4.9/bin:$PATH
           echo "ARCH=$ARCH" >> $GITHUB_ENV
