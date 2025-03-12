@@ -24,12 +24,13 @@ jobs:
               python3-markdown libxml2-utils xsltproc zlib1g-dev libc6-dev libtinfo6 make repo \
               cpio kmod openssl libelf-dev pahole libssl-dev
 
-      - name: Setup Build Environment
+      - name: Initialize Git submodules
         run: |
           git submodule update --init
           
       - name: Setup Build Environment
         run: |
+          git submodule update --init
           export ARCH=arm64
           export PATH=$GITHUB_WORKSPACE/toolchains/aarch64-linux-android-4.9/bin:$PATH
           echo "ARCH=$ARCH" >> $GITHUB_ENV
