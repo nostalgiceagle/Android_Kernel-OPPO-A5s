@@ -31,6 +31,12 @@ ccflags-y += -I$(srctree)/drivers/misc/mediatek/masp/asfv2/asf_inc
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/masp/asfv2/asf_export_inc
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/masp/asfv2/module
 else
+else ifeq ($(shell echo $(TARGET_PRODUCT) | sed -e 's/_1.*//g'),full_oppo6765)
+DEFS_PLATFORM = -DCONFIG_OPPO_BSP_SECCOM_PLATFORM=6765
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/masp/asfv2/asf_inc
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/masp/asfv2/asf_export_inc
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/masp/asfv2/module
+else
 DEFS_PLATFORM = -DCONFIG_OPPO_BSP_SECCOM_PLATFORM=0
 endif
 
