@@ -29,7 +29,7 @@
 #include <sec_boot_lib.h>
 #else
 //#include <soc/qcom/smem.h>
-#include "sec_boot_lib.h"
+#include <sec_boot_lib.h>
 #endif
 
 #include <linux/slab.h>
